@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CalculatorService.Client/CalculatorService.Client.csproj" />
+  <Project Path="CalculatorService.Server/CalculatorService.Server.csproj" />
+  <Project Path="CalculatorServiceok.Server/CalculatorServiceok.Server.csproj" Id="3e3979db-0116-4448-909b-afbe464eabf2" />
+</Solution>
