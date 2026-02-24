@@ -1,15 +1,14 @@
-using CalculatorService.Server.Services;
+using CalculatorServiceok.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Esta línea es la que evita el error "Unable to resolve service"
+// 1. Agregar el servicio
 builder.Services.AddSingleton<JournalService>();
-
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseRouting();
+// 2. Mapear los controladores
 app.MapControllers();
 
 app.Run();
