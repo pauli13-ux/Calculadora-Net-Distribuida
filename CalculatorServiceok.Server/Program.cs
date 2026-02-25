@@ -1,15 +1,27 @@
 #nullable disable
 
 using CalculatorServiceok.Server.Services;
-using CalculatorServiceok.Server.Models; 
+using CalculatorServiceok.Server.Models;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
+
+// 2. Configure Serilog before builder.Build()
+Log.Logger = new LoggerConfiguration()
+	.MinimumLevel.Information()
+	.WriteTo.Console()
+	.WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // 📅 Daily rotation here
+	.CreateLogger();
+
+builder.Host.UseSerilog(); // 3. Dile al servidor que use Serilog
 
 // --- 1. SERVICE CONFIGURATION (Dependency Injection) ---
 
 // CORRECTION: We registered the interface linked to the class.
 // AddSingleton ensures that all users share the same history in memory.
 
-builder.Services.AddSingleton<JournalService>();
+builder.Services.AddSingleton<IJournalService, JournalService>(); ;
+
+builder.Services.AddSingleton<ICalculatorService, CalculatorService>();
 
 builder.Services.AddControllers();
 
