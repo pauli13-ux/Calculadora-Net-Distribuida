@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="CalculatorService.Client/CalculatorService.Client.csproj" />
   <Project Path="CalculatorServiceok.Server/CalculatorServiceok.Server.csproj" Id="3e3979db-0116-4448-909b-afbe464eabf2" />
-  <Project Path="TestProject1/TestProject1.csproj" Id="09a304c1-89be-49cc-b9c8-ef8f8318ef5f" />
+  <Project Path="CalculatorServices.Tests/CalculatorServices.Tests.csproj" Id="d291dd2d-bc63-4c11-b9f4-f958a2a1e9fa" />
 </Solution>

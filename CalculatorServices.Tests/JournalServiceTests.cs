@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using CalculatorServiceok.Server.Services;
-using CalculatorServiceok.Server.Models;
+﻿using CalculatorServiceok.Server.Services;
+using NUnit.Framework;
+using System.Collections.Generic;
 
-namespace TestProject1
+namespace CalculatorServiceok.Server.Tests
 {
     [TestFixture]
-    public class JournalTests
+    public class JournalServiceTests
     {
         private JournalService _journalService;
 

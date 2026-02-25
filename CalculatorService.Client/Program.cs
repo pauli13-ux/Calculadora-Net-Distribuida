@@ -59,7 +59,7 @@ namespace CalculatorService.Client
 		{
 			Console.Clear();
 			Console.WriteLine("*・゜・*:.。.*.。.:*・☆・゜・*:.。.*.。.:*・☆・");
-			Console.WriteLine("                🧮 CALCULADORA REST          ");
+			Console.WriteLine("                🧮 CALCULADORA REST          ");
 			Console.WriteLine("*・゜・*:.。.*.。.:*・☆・゜・*:.。.*.。.:*・☆・");
 			Console.WriteLine(" 1. ➕ Sumar");
 			Console.WriteLine(" 2. ➖ Restar");
@@ -97,13 +97,16 @@ namespace CalculatorService.Client
 				};
 
 				/*It's a smart function that knows what to display depending on the operation:
-                If it's division, it looks for two values ​​in the answer: the quotient and the remainder.
-                If it's another operation, it looks for a single value called "result".*/
+                If it's division, it looks for two values ​​in the answer: the quotient and the remainder.
+                If it's another operation, it looks for a single value called "result".*/
 
 				await MostrarResultado(res, simbolo);
 			}
 			// FIXME: Error handling??
-			catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
+			/*En lugar de un catch (Exception ex) genérico, debemos separar los errores de conexión de los errores de datos.*/
+			catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor. ¿Está encendido?"); }
+			catch (JsonException) { Console.WriteLine("\n❌ Error de datos: La respuesta del servidor no tiene un formato válido."); }
+			catch (Exception ex) { Console.WriteLine($"\n⚠️ Error inesperado: {ex.Message}"); }
 			await EsperarTecla();
 		}
 
@@ -156,13 +159,30 @@ namespace CalculatorService.Client
 					Console.WriteLine($"\n✅ Resultado: {data.GetProperty("result")}");
 				}
 			}
-			else
+			else if (res != null)
 			{
-				Console.WriteLine($"\n❌ Error al procesar: {res?.StatusCode}");
+				try
+				{
+					var errorData = await res.Content.ReadFromJsonAsync<JsonElement>();
+
+					if (errorData.TryGetProperty("error", out var errorMessage))
+					{
+						Console.WriteLine($"\n❌ Error: {errorMessage}");
+					}
+					else
+					{
+						Console.WriteLine($"\n❌ Error al procesar: {res.StatusCode}");
+					}
+				}
+				catch
+				{
+					// Si el error no es un JSON (ej: el servidor está apagado), mostramos el código técnico
+					Console.WriteLine($"\n❌ Error al procesar: {res.StatusCode}");
+				}
 			}
 		}
 
-		// Square Root Method 
+		// Square Root Method 
 		static async Task ProcesarRaizCuadrada()
 		{
 			try
@@ -174,6 +194,7 @@ namespace CalculatorService.Client
 				var res = await client.PostAsJsonAsync("calculator/sqrt", new { Number = n });
 				await MostrarResultado(res, "sqrt");
 			}
+			catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor."); }
 			catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
 			await EsperarTecla();
 		}
@@ -190,22 +211,27 @@ namespace CalculatorService.Client
 			}
 			else
 			{
-				var res = await client.GetAsync($"calculator/journal/{id}");
-				if (res.IsSuccessStatusCode)
+				try
 				{
-					// The server usually returns an object with a list called "operations"
-					var doc = await res.Content.ReadFromJsonAsync<JsonElement>();
-					Console.WriteLine($"\n--- 📜 HISTORIAL DE: {id.ToUpper()} ---");
-
-					if (doc.TryGetProperty("operations", out JsonElement operations))
+					var res = await client.GetAsync($"calculator/journal/{id}");
+					if (res.IsSuccessStatusCode)
 					{
-						foreach (var item in operations.EnumerateArray())
+						// The server usually returns an object with a list called "operations"
+						var doc = await res.Content.ReadFromJsonAsync<JsonElement>();
+						Console.WriteLine($"\n--- 📜 HISTORIAL DE: {id.ToUpper()} ---");
+
+						if (doc.TryGetProperty("operations", out JsonElement operations))
 						{
-							Console.WriteLine($"• {item.GetProperty("operation")}: {item.GetProperty("calculation")}");
+							foreach (var item in operations.EnumerateArray())
+							{
+								Console.WriteLine($"• {item.GetProperty("operation")}: {item.GetProperty("calculation")}");
+							}
 						}
 					}
+					else { Console.WriteLine($"\n❌ No se encontró historial para el ID: {id}"); }
 				}
-				else { Console.WriteLine($"\n❌ No se encontró historial para el ID: {id}"); }
+				catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo obtener el historial."); }
+				catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
 			}
 			await EsperarTecla();
 		}
@@ -266,4 +292,45 @@ Modelo Request-Response (Petición-Respuesta):
 Preparación: Configuras quién eres (Header).
 Petición: Envías qué quieres hacer (POST/GET con JSON).
 Espera: El programa aguanta sin bloquearse (await).
-Procesado: Recibes la respuesta y extraes el valor con GetProperty.*/
+Procesado: Recibes la respuesta y extraes el valor con GetProperty.
+
+ 
+ 
+--------------------------------------------- MANEJO DE ERRORES QUE TENIA QUE ARREGLAR------------------------------------------------
+ 
+1. En ProcesarOperacionBinaria (Línea 105 aproximadamente)
+He sustituido el catch genérico por tres específicos para que, si el servidor está apagado o los datos vienen mal, el programa sepa qué decirte.
+
+En lugar de un catch (Exception ex) genérico, debemos separar los errores de conexión de los errores de datos.
+catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor. ¿Está encendido?"); }
+catch (JsonException) { Console.WriteLine("\n❌ Error de datos: La respuesta del servidor no tiene un formato válido."); }
+catch (Exception ex) { Console.WriteLine($"\n⚠️ Error inesperado: {ex.Message}"); }
+
+2.En ProcesarRaizCuadrada(Línea 186 aproximadamente)
+He añadido la captura de error de red específica para que no solo diga "Error", sino que identifique que es un problema de conexión.
+catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor."); }
+catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
+
+
+3.En ConsultarHistorial(Línea 213 aproximadamente)
+Aquí he envuelto toda la llamada al servidor en un bloque try-catch. Esto es vital porque si alguien pide un ID y 
+el servidor no responde, antes el programa podía fallar, ahora te avisará amigablemente.
+
+try 
+{
+    var res = await client.GetAsync($"calculator/journal/{id}");
+    // ... resto del código ...
+}
+catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo obtener el historial."); }
+catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
+¿Por qué lo he puesto ahí?
+Porque esos son los "puntos calientes" donde tu código sale a internet. 
+Al poner el manejo de errores justo ahí, proteges toda la aplicación de caídas inesperadas. Tu jefe verá que ahora el programa es robusto y no solo funcional.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ */
