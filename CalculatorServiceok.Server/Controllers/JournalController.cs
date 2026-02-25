@@ -84,5 +84,35 @@ Si algo está mal, envía un Código 400 (Bad Request).
 
 Sin este controlador, podrías hacer mil cálculos, pero nunca podrías volver a verlos. 
 Es la ventana que permite al usuario mirar dentro de la base de datos del servidor y decir: "A ver, ¿qué operaciones hice ayer con el ID 'pau'?".
-  
+
+
+
+
+
+
+------------------------------------------------------------------COMMON ERROR RESPONSE-----------------------------------------------------------------
+Estandarización: Ahora tu servidor siempre responde con el mismo formato (un JSON con la propiedad "error") cuando algo sale mal.
+
+Desacoplamiento: El servidor decide qué mensaje enviar ("No se puede dividir entre 0") y el cliente simplemente se encarga de mostrarlo.
+
+Resiliencia: Al añadir los bloques try-catch específicos para HttpRequestException y JsonException, tu aplicación cliente ya 
+no se cerrará si el servidor falla o envía datos raros.
+
+
+Gestión centralizada de errores. Esto hace que tu software sea profesional, porque no dejas que el usuario final vea errores de 
+programación (como excepciones crudas de C#), sino mensajes que puede entender.
+
+Ya están los modelos separados y el manejo de errores listo.
+
+
+-------------------------------CalculatorService should produce diagnostics/execution logs as rotating (ie. daily) files, 
+including enough information to be of use while diagnosing service issues.-----------------------------------
+
+Para implementar esto de forma profesional en .NET, lo estándar es usar una librería llamada Serilog. Permite configurar la rotación diaria con 
+apenas un par de líneas de código.
+
+
+
+
+
 */
