@@ -6,7 +6,7 @@ namespace CalculatorServiceok.Server.Models
 	public class MultRequest
 	{
 		[Required]
-		[MinLength(2, ErrorMessage = "Se requieren al menos dos factores para multiplicar.")]
+		[MinLength(2, ErrorMessage = "At least two factors are required for multiplication.")]
 		public List<double> Factors { get; set; } = new();
 	}
 }

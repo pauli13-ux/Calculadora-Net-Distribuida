@@ -73,7 +73,7 @@ namespace CalculatorServiceok.Server.Controllers
 			if (request.Divisor == 0)
 			{
 				_logger.LogWarning("Intento de división por cero. ID: {Id}", id ?? "N/A");
-				return BadRequest(new { error = "División por cero no permitida" });
+				return BadRequest(new { error = "Division by zero not allowed" });
 			}
 
 			var (quotient, remainder) = _calculatorService.Divide(request.Dividend, request.Divisor);
@@ -92,7 +92,7 @@ namespace CalculatorServiceok.Server.Controllers
 			if (request.Number < 0)
 			{
 				_logger.LogWarning("Intento de raíz negativa. ID: {Id}", id ?? "N/A");
-				return BadRequest(new { error = "No se puede calcular la raíz de un número negativo" });
+				return BadRequest(new { error = "You cannot calculate the square root of a negative number." });
 			}
 
 			var res = _calculatorService.SquareRoot(request.Number);

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CalculatorServiceok.Server.Models;
 using CalculatorServiceok.Server.Services;
-using CalculatorServiceok.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CalculatorServiceok.Server.Controllers
 {
@@ -23,7 +24,7 @@ namespace CalculatorServiceok.Server.Controllers
             // 1. Basic security validation
             if (string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest(new { error = "El ID de seguimiento es obligatorio." });
+                return BadRequest(new { error = "The tracking ID is required." });
             }
 
             // 2. We recovered the service tickets
@@ -37,9 +38,10 @@ namespace CalculatorServiceok.Server.Controllers
                 return Ok(new { operations = new List<object>() }); //This is the message that says: "Everything went well, here's the data." It sends an HTTP 200 status code.
             }
 
-            // 4. Completado: Devolvemos un objeto con una propiedad "operations" 
-            // para que coincida con lo que el cliente espera recibir.
-            return Ok(new { operations = entries });
+			// 4. Completed: We return an object with an "operations" property
+// to match what the client expects to receive.
+
+			return Ok(new { operations = entries });
         }
     }
 }

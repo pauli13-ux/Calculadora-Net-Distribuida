@@ -11,7 +11,7 @@ namespace CalculatorServices.Tests
 
 		public CalculatorServiceTests()
 		{
-			// Instanciamos el servicio real para probarlo
+			// We instantiate the real service to test it
 			_service = new CalculatorService();
 		}
 
@@ -35,10 +35,10 @@ namespace CalculatorServices.Tests
 			double dividend = 10;
 			double divisor = 3;
 
-			// FIXME INGLES Act - Usamos la tupla que devuelve tu CalculatorService
+			// FIXME ENGLISH Act - We use the tuple returned by your CalculatorService
 			var result = _service.Divide(dividend, divisor);
 
-			// Assert - Comparamos decimales (double)
+			// Assert - We compare decimals (double)
 			Assert.That(result.Quotient, Is.EqualTo(3.3333333333333335).Within(0.0000000001));
 			Assert.That(result.Remainder, Is.EqualTo(1.0));
 		}

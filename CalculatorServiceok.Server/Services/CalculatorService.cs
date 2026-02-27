@@ -10,7 +10,7 @@
 
 		public (double Quotient, double Remainder) Divide(double dividend, double divisor)
 		{
-			// La lógica de negocio vive aquí
+			// Business logic lives here
 			return (dividend / divisor, dividend % divisor);
 		}
 

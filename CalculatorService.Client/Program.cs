@@ -14,7 +14,7 @@ namespace CalculatorService.Client
 {
 	class Program
 	{
-		// Mantenemos tu cliente con la dirección base
+		// We keep your client with the base address
 		private static readonly HttpClient client = new HttpClient()
 		{
 			BaseAddress = new Uri("http://localhost:62030/") //This is the address of the "office" to which we send the requests.
@@ -48,7 +48,7 @@ namespace CalculatorService.Client
 					case "0": salir = true; break;
 					default:
 						// FIXME: explain why it is invalid
-						Console.WriteLine($"\n❌ '{opcion}' no es una opción válida del menú (0-6).");
+						Console.WriteLine($"\n❌ '{opcion}' It is not a valid menu option (0-6).");
 						await EsperarTecla();
 						break;
 				}
@@ -103,10 +103,10 @@ namespace CalculatorService.Client
 				await MostrarResultado(res, simbolo);
 			}
 			// FIXME: Error handling??
-			/*En lugar de un catch (Exception ex) genérico, debemos separar los errores de conexión de los errores de datos.*/
-			catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor. ¿Está encendido?"); }
-			catch (JsonException) { Console.WriteLine("\n❌ Error de datos: La respuesta del servidor no tiene un formato válido."); }
-			catch (Exception ex) { Console.WriteLine($"\n⚠️ Error inesperado: {ex.Message}"); }
+			/*Instead of a generic catch (Exception ex), we must separate connection errors from data errors.*/
+			catch (HttpRequestException) { Console.WriteLine("\n❌ Network error: No se pudo conectar con el servidor. ¿Está encendido?"); }
+			catch (JsonException) { Console.WriteLine("\n❌ Data error: La respuesta del servidor no tiene un formato válido."); }
+			catch (Exception ex) { Console.WriteLine($"\n⚠️ Unexpected error: {ex.Message}"); }
 			await EsperarTecla();
 		}
 
@@ -132,7 +132,7 @@ namespace CalculatorService.Client
 				string entrada = Console.ReadLine()?.Replace(",", ".");
 				if (double.TryParse(entrada, NumberStyles.Any, CultureInfo.InvariantCulture, out double n))
 					return n;
-				Console.WriteLine("❌ Formato incorrecto. Usa números (ej: 5.5).");
+				Console.WriteLine("❌ Incorrect format. Use numbers (e.g., 5.5).");
 			}
 		}
 
@@ -148,15 +148,15 @@ namespace CalculatorService.Client
 					// Corrected: "result" -> "quotient" and "remainder"
 					var q = data.GetProperty("quotient");
 					var r = data.GetProperty("remainder");
-					Console.WriteLine($"\n✅ Cociente: {q} | Resto: {r}");
+					Console.WriteLine($"\n✅ Quotient: {q} | Remainder: {r}");
 				}
 				else if (op == "sqrt")
 				{
-					Console.WriteLine($"\n✅ Raíz Cuadrada: {data.GetProperty("result")}");
+					Console.WriteLine($"\n✅ Square Root: {data.GetProperty("result")}");
 				}
 				else
 				{
-					Console.WriteLine($"\n✅ Resultado: {data.GetProperty("result")}");
+					Console.WriteLine($"\n✅ Result: {data.GetProperty("result")}");
 				}
 			}
 			else if (res != null)
@@ -171,13 +171,13 @@ namespace CalculatorService.Client
 					}
 					else
 					{
-						Console.WriteLine($"\n❌ Error al procesar: {res.StatusCode}");
+						Console.WriteLine($"\n❌ Error while processing: {res.StatusCode}");
 					}
 				}
 				catch
 				{
-					// Si el error no es un JSON (ej: el servidor está apagado), mostramos el código técnico
-					Console.WriteLine($"\n❌ Error al procesar: {res.StatusCode}");
+					// If the error is not a JSON (e.g., the server is off), we display the technical code.
+					Console.WriteLine($"\n❌ Error while processing: {res.StatusCode}");
 				}
 			}
 		}
@@ -187,14 +187,14 @@ namespace CalculatorService.Client
 		{
 			try
 			{
-				Console.WriteLine("\n--- Módulo de Raíz Cuadrada ---");
+				Console.WriteLine("\n--- Square Root Modulus ---");
 				ConfigurarCabecera();
-				double n = LeerNumero("Introduce el número: ");
+				double n = LeerNumero("Enter the number: ");
 
 				var res = await client.PostAsJsonAsync("calculator/sqrt", new { Number = n });
 				await MostrarResultado(res, "sqrt");
 			}
-			catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo conectar con el servidor."); }
+			catch (HttpRequestException) { Console.WriteLine("❌ Network error: Could not connect to the server."); }
 			catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
 			await EsperarTecla();
 		}
@@ -230,7 +230,7 @@ namespace CalculatorService.Client
 					}
 					else { Console.WriteLine($"\n❌ No se encontró historial para el ID: {id}"); }
 				}
-				catch (HttpRequestException) { Console.WriteLine("\n❌ Error de red: No se pudo obtener el historial."); }
+				catch (HttpRequestException) { Console.WriteLine("\n❌ Network error: Could not obtain history."); }
 				catch (Exception ex) { Console.WriteLine($"\n⚠️ Error: {ex.Message}"); }
 			}
 			await EsperarTecla();
@@ -238,7 +238,7 @@ namespace CalculatorService.Client
 
 		static async Task EsperarTecla()
 		{
-			Console.WriteLine("\nPresiona una tecla para continuar...");
+			Console.WriteLine("\nPress any key to continue...");
 			await Task.Run(() => Console.ReadKey(true));
 		}
 	}
