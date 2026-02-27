@@ -1,6 +1,4 @@
 ﻿using CalculatorServiceok.Server.Services;
-using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace CalculatorServiceok.Server.Tests
 {
@@ -17,7 +15,7 @@ namespace CalculatorServiceok.Server.Tests
         }
 
         [Test]
-        public void AddEntry_DeberiaGuardarYRecuperarCorrectamente()
+        public void AddEntry_DeberiaGuardarYRecuperarCorrectamente()//FIXME INGLES
         {
             // 1. Arrange (Preparar)
             string idUsuario = "pau";
@@ -34,7 +32,7 @@ namespace CalculatorServiceok.Server.Tests
             Assert.That(historial[0].Calculation, Is.EqualTo("5 + 5 = 10"));
         }
 
-        [Test]
+        [Test] //FIXME NOMBRES TEST INGLES
         public void GetEntries_DeberiaRetornarListaVacia_SiElIdNoExiste()
         {
             // Act

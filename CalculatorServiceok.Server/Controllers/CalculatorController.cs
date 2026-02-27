@@ -29,6 +29,7 @@ namespace CalculatorServiceok.Server.Controllers
 		{
 			var res = _calculatorService.Add(request.Addends);
 
+			//FIXME INGLES
 			_logger.LogInformation("Suma realizada. ID: {Id}. Resultado: {Res}", id ?? "N/A", res);
 
 			if (!string.IsNullOrWhiteSpace(id))

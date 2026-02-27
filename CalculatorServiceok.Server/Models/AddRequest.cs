@@ -6,7 +6,7 @@ namespace CalculatorServiceok.Server.Models
 	public class AddRequest
 	{
 		[Required]
-		[MinLength(2, ErrorMessage = "Se requieren al menos dos números para sumar.")]
+		[MinLength(2, ErrorMessage = "Se requieren al menos dos números para sumar.")] // FIXME: Mensaje de error en ingles
 		public List<double> Addends { get; set; } = new();
 	}
 }

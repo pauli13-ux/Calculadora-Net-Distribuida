@@ -110,7 +110,7 @@ namespace CalculatorService.Client
 			await EsperarTecla();
 		}
 
-
+		//FIXME NOMBRE METODOS INGLES
 		private static void ConfigurarCabecera()
 		{
 			Console.Write("ID de seguimiento (ej: pau): ");
